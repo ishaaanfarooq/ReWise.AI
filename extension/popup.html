@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rewise AI</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-row">
+        <div class="logo-icon">🧠</div>
+        <div>
+          <h1 class="app-name">Rewise AI</h1>
+          <p class="app-tagline">Capture · Enhance · Revise</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- Logged Out State -->
+    <div id="logged-out" class="state" style="display:none;">
+      <div class="hero-section">
+        <div class="hero-icon">📚</div>
+        <h2>Welcome!</h2>
+        <p class="hero-text">Highlight text on any webpage, right-click, and save it. AI will process your highlights for revision.</p>
+      </div>
+      <button id="btn-login" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
+          <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
+          <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+        </svg>
+        Sign in with Google
+      </button>
+    </div>
+
+    <!-- Logged In State -->
+    <div id="logged-in" class="state" style="display:none;">
+      <!-- User Info -->
+      <div class="user-card">
+        <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+        <div class="user-info">
+          <span id="user-name" class="user-name"></span>
+          <span id="user-email" class="user-email"></span>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number" id="stat-total">—</span>
+          <span class="stat-label">Total</span>
+        </div>
+        <div class="stat-card stat-processed">
+          <span class="stat-number" id="stat-processed">—</span>
+          <span class="stat-label">Processed</span>
+        </div>
+        <div class="stat-card stat-pending">
+          <span class="stat-number" id="stat-pending">—</span>
+          <span class="stat-label">Pending</span>
+        </div>
+      </div>
+
+      <!-- Top Tags -->
+      <div id="tags-section" class="tags-section" style="display:none;">
+        <h3 class="section-title">Top Topics</h3>
+        <div id="tags-container" class="tags-container"></div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="instructions">
+        <div class="instruction-item">
+          <span class="step-num">1</span>
+          <span>Select text on any webpage</span>
+        </div>
+        <div class="instruction-item">
+          <span class="step-num">2</span>
+          <span>Right-click → "Add to Rewise AI"</span>
+        </div>
+        <div class="instruction-item">
+          <span class="step-num">3</span>
+          <span>AI processes & organizes for you</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button id="btn-refresh" class="btn btn-secondary btn-small">↻ Refresh</button>
+        <button id="btn-logout" class="btn btn-ghost btn-small">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
