@@ -1,27 +1,15 @@
 import { Worker } from 'bullmq';
-import mongoose from 'mongoose';
 import { createRedisConnection } from './connection.js';
 import Highlight from '../models/Highlight.js';
 import aiService from '../services/aiService.js';
-import config from '../config/index.js';
 import logger from '../utils/logger.js';
 
 const MAX_RETRIES = 3;
 
 /**
  * Start the highlight processing worker
- * This runs as a separate process: `npm run worker`
  */
-async function startWorker() {
-  // Connect to MongoDB
-  try {
-    await mongoose.connect(config.mongoUri);
-    logger.info('Worker connected to MongoDB');
-  } catch (error) {
-    logger.error('Worker MongoDB connection failed:', error.message);
-    process.exit(1);
-  }
-
+export async function startWorker() {
   const connection = createRedisConnection();
 
   const worker = new Worker(
@@ -86,21 +74,7 @@ async function startWorker() {
     logger.error('Worker error:', error.message);
   });
 
-  // Graceful shutdown
-  const shutdown = async (signal) => {
-    logger.info(`${signal} received, shutting down worker...`);
-    await worker.close();
-    await mongoose.disconnect();
-    process.exit(0);
-  };
+  logger.info('🚀 Highlight processing worker initialized');
 
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
-  process.on('SIGINT', () => shutdown('SIGINT'));
-
-  logger.info('🚀 Highlight processing worker started');
+  return worker;
 }
-
-startWorker().catch((error) => {
-  logger.error('Worker startup failed:', error);
-  process.exit(1);
-});

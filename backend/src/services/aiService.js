@@ -1,4 +1,5 @@
 import { InferenceClient } from '@huggingface/inference';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import config from '../config/index.js';
 import logger from '../utils/logger.js';
 
@@ -34,6 +35,27 @@ class HuggingFaceProvider {
       },
     });
     return result.generated_text.trim();
+  }
+}
+
+/**
+ * Google Gemini API provider
+ */
+class GeminiProvider {
+  constructor() {
+    const genAI = new GoogleGenerativeAI(config.ai.gemini.apiKey);
+    this.model = genAI.getGenerativeModel({ model: config.ai.gemini.model });
+  }
+
+  async summarize(text) {
+    const prompt = `Summarize the following text concisely in 2-3 sentences. Return ONLY the summary, no extra commentary.\n\n"${text}"`;
+    const result = await this.model.generateContent(prompt);
+    return result.response.text().trim();
+  }
+
+  async generateText(prompt) {
+    const result = await this.model.generateContent(prompt);
+    return result.response.text().trim();
   }
 }
 
@@ -99,6 +121,10 @@ class AIService {
       case 'huggingface':
         this.provider = new HuggingFaceProvider();
         logger.info('AI Service initialized with HuggingFace provider');
+        break;
+      case 'gemini':
+        this.provider = new GeminiProvider();
+        logger.info('AI Service initialized with Google Gemini provider');
         break;
       case 'ollama':
         this.provider = new OllamaProvider();

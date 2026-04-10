@@ -13,6 +13,7 @@ import errorHandler from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.js';
 import highlightRoutes from './routes/highlights.js';
 import summaryRoutes from './routes/summary.js';
+import { initBackgroundServices, shutdownBackgroundServices } from './cron/scheduledJobs.js';
 
 const app = express();
 
@@ -98,6 +99,9 @@ async function start() {
     await mongoose.connect(config.mongoUri);
     logger.info('✅ Connected to MongoDB');
 
+    // Initialize background services (Crons & Workers)
+    await initBackgroundServices();
+
     // Start server
     app.listen(config.port, () => {
       logger.info(`🚀 Rewise AI backend running on port ${config.port}`);
@@ -113,6 +117,7 @@ async function start() {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully...');
+  await shutdownBackgroundServices();
   await mongoose.disconnect();
   process.exit(0);
 });

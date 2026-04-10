@@ -58,21 +58,38 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     const data = await response.json();
 
     if (response.ok && data.success) {
-      showNotification('✅ Saved!', `Highlight saved and queued for AI processing.`);
+      // Show visual feedback on the page
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'SHOW_TOAST',
+        text: 'Saved to Rewise AI!',
+        status: 'success'
+      });
       
       // Update badge
       await updateBadge();
     } else if (response.status === 401) {
       // Token expired — clear auth and prompt re-login
       await chrome.storage.local.remove('rewise_auth');
-      showNotification('Session Expired', 'Please log in again.');
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'SHOW_TOAST',
+        text: 'Session expired. Please log in again.',
+        status: 'error'
+      });
       chrome.tabs.create({ url: `${API_BASE}/auth/google` });
     } else {
-      showNotification('❌ Error', data.error || 'Failed to save highlight.');
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'SHOW_TOAST',
+        text: data.error || 'Failed to save highlight.',
+        status: 'error'
+      });
     }
   } catch (error) {
     console.error('Rewise AI: Save failed', error);
-    showNotification('❌ Network Error', 'Could not connect to Rewise AI server.');
+    chrome.tabs.sendMessage(tab.id, {
+      type: 'SHOW_TOAST',
+      text: 'Network Error. Could not connect to server.',
+      status: 'error'
+    });
   }
 });
 
@@ -130,6 +147,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       }
       try {
         const response = await fetch(`${API_BASE}/summary/stats`, {
+          headers: { 'Authorization': `Bearer ${authData.token}` },
+        });
+        const data = await response.json();
+        sendResponse(data);
+      } catch (err) {
+        sendResponse({ success: false, error: err.message });
+      }
+    });
+    return true;
+  }
+
+  if (message.type === 'GET_RECENT') {
+    getAuthData().then(async (authData) => {
+      if (!authData?.token) {
+        sendResponse({ success: false, error: 'Not authenticated' });
+        return;
+      }
+      try {
+        const response = await fetch(`${API_BASE}/highlights?limit=5`, {
           headers: { 'Authorization': `Bearer ${authData.token}` },
         });
         const data = await response.json();

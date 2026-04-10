@@ -21,6 +21,8 @@ const $statProcessed = document.getElementById('stat-processed');
 const $statPending = document.getElementById('stat-pending');
 const $tagsSection = document.getElementById('tags-section');
 const $tagsContainer = document.getElementById('tags-container');
+const $recentSection = document.getElementById('recent-section');
+const $highlightsContainer = document.getElementById('highlights-container');
 
 // ─── Initialization ──────────────────────────────────────────
 
@@ -45,6 +47,7 @@ async function init() {
   if (authData?.token) {
     showLoggedIn(authData);
     loadStats();
+    loadRecentHighlights();
   } else {
     showLoggedOut();
   }
@@ -165,7 +168,41 @@ $btnRefresh.addEventListener('click', () => {
   $statProcessed.textContent = '—';
   $statPending.textContent = '—';
   loadStats();
+  loadRecentHighlights();
 });
+
+// ─── Recent Highlights ───────────────────────────────────────
+
+async function loadRecentHighlights() {
+  try {
+    chrome.runtime.sendMessage({ type: 'GET_RECENT' }, (response) => {
+      if (response?.success && response.highlights) {
+        if (response.highlights.length > 0) {
+          $recentSection.style.display = 'block';
+          $highlightsContainer.innerHTML = response.highlights
+            .map((h) => {
+              const date = new Date(h.createdAt).toLocaleDateString();
+              const summary = h.aiEnhanced?.summary || 'Pending AI processing...';
+              return `
+                <div class="highlight-item">
+                  <div class="highlight-text">${h.text}</div>
+                  <div class="highlight-meta">
+                    <span>${date}</span>
+                    <span class="highlight-status status-${h.status}">${h.status}</span>
+                  </div>
+                </div>
+              `;
+            })
+            .join('');
+        } else {
+          $recentSection.style.display = 'none';
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Failed to load recent highlights:', error);
+  }
+}
 
 // ─── Listen for auth changes ─────────────────────────────────
 

@@ -1,10 +1,8 @@
 import cron from 'node-cron';
-import mongoose from 'mongoose';
 import User from '../models/User.js';
 import Highlight from '../models/Highlight.js';
 import { generateDigest } from '../services/aiService.js';
 import emailService from '../services/emailService.js';
-import config from '../config/index.js';
 import logger from '../utils/logger.js';
 
 /**
@@ -12,16 +10,7 @@ import logger from '../utils/logger.js';
  * Runs every Sunday at 9:00 AM
  * Fetches processed highlights per user and sends a digest email
  */
-async function startCronJobs() {
-  // Connect to MongoDB
-  try {
-    await mongoose.connect(config.mongoUri);
-    logger.info('Cron service connected to MongoDB');
-  } catch (error) {
-    logger.error('Cron MongoDB connection failed:', error.message);
-    process.exit(1);
-  }
-
+export function setupCronJobs() {
   // Every Sunday at 9:00 AM
   cron.schedule('0 9 * * 0', async () => {
     logger.info('🕘 Weekly digest cron started');
@@ -95,15 +84,4 @@ async function startCronJobs() {
   });
 
   logger.info('📅 Cron jobs scheduled: Weekly digest every Sunday at 9:00 AM');
-
-  // Graceful shutdown
-  process.on('SIGTERM', async () => {
-    await mongoose.disconnect();
-    process.exit(0);
-  });
 }
-
-startCronJobs().catch((error) => {
-  logger.error('Cron startup failed:', error);
-  process.exit(1);
-});

@@ -10,10 +10,16 @@
     "worker": "node src/queue/highlightWorker.js",
     "cron": "node src/cron/weeklyDigest.js"
   },
-  "keywords": ["rewise", "ai", "knowledge", "chrome-extension"],
+  "keywords": [
+    "rewise",
+    "ai",
+    "knowledge",
+    "chrome-extension"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@huggingface/inference": "^2.8.1",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.1.0",
