@@ -109,7 +109,7 @@ async function start() {
       logger.info(`🤖 AI Provider: ${config.ai.provider}`);
     });
   } catch (error) {
-    logger.error('❌ Startup failed:', error.message);
+    logger.error('❌ Startup failed:', error);
     process.exit(1);
   }
 }

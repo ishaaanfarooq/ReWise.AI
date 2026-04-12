@@ -1,4 +1,4 @@
-import { InferenceClient } from '@huggingface/inference';
+import { HfInference } from '@huggingface/inference';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import config from '../config/index.js';
 import logger from '../utils/logger.js';
@@ -10,7 +10,7 @@ import logger from '../utils/logger.js';
  */
 class HuggingFaceProvider {
   constructor() {
-    this.client = new InferenceClient(config.ai.huggingface.token);
+    this.client = new HfInference(config.ai.huggingface.token);
     this.summaryModel = 'facebook/bart-large-cnn';
     this.textGenModel = 'mistralai/Mistral-7B-Instruct-v0.3';
   }
