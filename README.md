@@ -95,7 +95,9 @@ Edit `.env` with your credentials:
 | `GOOGLE_CLIENT_ID` | From Google Cloud Console |
 | `GOOGLE_CLIENT_SECRET` | From Google Cloud Console |
 | `REDIS_URL` | Redis connection URL |
-| `AI_PROVIDER` | `huggingface` or `ollama` |
+| `AI_PROVIDER` | `gemini`, `huggingface`, or `ollama` |
+| `GEMINI_API_KEY` | Your Google AI Studio API Key |
+| `GEMINI_MODEL` | Preferred model (e.g., `gemini-1.5-flash`) |
 | `HF_ACCESS_TOKEN` | Hugging Face API token (if using HF) |
 | `SMTP_USER` / `SMTP_PASS` | Email credentials (Gmail app password) |
 
@@ -152,9 +154,23 @@ npm run cron
 
 ---
 
+---
+
 ## 🤖 AI Providers
 
-### Hugging Face (Default — Free)
+### Google Gemini (Recommended — Best Quality)
+
+Set in `.env`:
+```
+AI_PROVIDER=gemini
+GEMINI_API_KEY=your_google_ai_studio_key
+GEMINI_MODEL=gemini-1.5-flash
+```
+
+- High-quality summarization, explanation, and tagging.
+- Fast inference with generous free tier via Google AI Studio.
+
+### Hugging Face (Cloud — Free)
 
 Set in `.env`:
 ```
@@ -183,12 +199,17 @@ OLLAMA_MODEL=llama3.2
 
 ---
 
+---
+
 ## 📧 Email Setup (Gmail)
 
 1. Enable 2-Factor Authentication on your Google account
 2. Go to [App Passwords](https://myaccount.google.com/apppasswords)
 3. Generate an app password for "Mail"
 4. Use your email as `SMTP_USER` and the app password as `SMTP_PASS`
+
+> [!TIP]
+> **Premium Dark-Themed Digests**: The system automatically generates elegant, dark-themed HTML emails with tag-based grouping and AI insights for a superior revision experience.
 
 ---
 
@@ -284,6 +305,8 @@ GET /highlights?page=1&limit=20&status=processed&tag=javascript
 - ✅ **Difficulty scoring** — beginner/intermediate/advanced
 - ✅ **Reprocess failed highlights** — retry mechanism
 - ✅ **Stats dashboard** — in extension popup
+- ✅ **Visual Feedback** — Real-time toast notifications on capture
+- ✅ **Premium Templates** — Dark-themed, grouped weekly digests
 - 🔜 **Spaced repetition** — future feature (schema ready)
 
 ---
